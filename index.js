@@ -17,6 +17,7 @@ var device = awsIot.device({
     host: 'a349hitxtjootl-ats.iot.us-east-1.amazonaws.com',
     //debug: true
 });
+device.subscribe('LED');
 
 const PiCamera = require('pi-camera');
 const myCamera = new PiCamera({
@@ -63,13 +64,10 @@ async function exec() {
     const isConnected = await connecting(device);
     if (!isConnected) { return; }
 
-    myCamera.snap()
-        .then((result) => {
-            // Your picture was captured
-        })
-        .catch((error) => {
-            // Handle your error
-        });
+    try {
+        await myCamera.snap();
+        device.publish('LED', JSON.stringify({ message: 'picture ready' }));
+    } catch (e) { device.publish('LED', JSON.stringify({ message: 'picture fail', e })); return; }
 
     const isUploaded = await upload();
     if (isUploaded) { console.log('The file is uploaded'); }
@@ -79,8 +77,9 @@ async function exec() {
 }
 
 // exec();
-// device.on('message', function (topic, payload) {
-//     //console.log('on message', topic, payload.toString());
-// })
+device.on('message', function (topic, payload) {
+    console.log('on message', topic, payload.toString());
+    exec();
+})
 
 
