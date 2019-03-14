@@ -79,8 +79,10 @@ async function exec() {
     try {
         // await myCamera.snap();
         const image = await streamCamera.takeImage();//await stillCamera.takeImage();
+        device.publish('LED', JSON.stringify({ message: 'taked...' }));
         fs.writeFileSync(output, image);
-        device.publish('LED', JSON.stringify({ message: 'picture ready' }));
+        device.publish('LED', JSON.stringify({ message: 'saved...' }));
+        // device.publish('LED', JSON.stringify({ message: 'picture ready' }));
     } catch (e) { device.publish('LED', JSON.stringify({ message: 'picture fail', e })); return; }
     
     device.publish('LED', JSON.stringify({ message: 'uploading...' }));
