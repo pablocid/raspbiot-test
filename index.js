@@ -21,11 +21,11 @@ device.subscribe('LED');
 device.on('connect', function () {
     device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }))
 });
-
+const output =`${__dirname}/test.jpg`;
 const PiCamera = require('pi-camera');
 const myCamera = new PiCamera({
     mode: 'photo',
-    output: `${__dirname}/test.jpg`,
+    output,
     width: 640,
     height: 480,
     nopreview: true,
@@ -43,11 +43,10 @@ function connecting(dev) {
 }
 function upload() {
     //configuring parameters
-    var filePath = "./test.jpg";
     var params = {
         Bucket: 'iot-image-raspicam',
-        Body: fs.createReadStream(filePath),
-        Key: "folder/" + Date.now() + "_" + path.basename(filePath)
+        Body: fs.createReadStream(output),
+        Key: "folder/" + Date.now() + "_" + path.basename(output)
     };
     return new Promise((res, rej) => {
         s3
