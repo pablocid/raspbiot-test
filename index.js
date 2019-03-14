@@ -5,7 +5,7 @@ const path = require('path');
 const credentials = require('./certs/credentials.json');
 const PiCamera = require('pi-camera');
 const { StillCamera, StreamCamera, Codec } = require('pi-camera-connect');
-const stillCamera = new StillCamera();
+// const stillCamera = new StillCamera();
 
 const streamCamera = new StreamCamera({
     codec: Codec.MJPEG
@@ -78,12 +78,16 @@ async function exec() {
 
     try {
         // await myCamera.snap();
-        const image = await stillCamera.takeImage(); //await streamCamera.takeImage();//
+        const image = await streamCamera.takeImage();//await stillCamera.takeImage();
         device.publish('LED', JSON.stringify({ message: 'taked...' }));
         fs.writeFileSync(output, image);
         device.publish('LED', JSON.stringify({ message: 'saved...' }));
         // device.publish('LED', JSON.stringify({ message: 'picture ready' }));
-    } catch (e) { device.publish('LED', JSON.stringify({ message: 'picture fail', e })); return; }
+    } catch (e) { 
+        console.log(e);
+        device.publish('LED', JSON.stringify({ message: 'picture fail', e }));
+        return; 
+    }
     
     device.publish('LED', JSON.stringify({ message: 'uploading...' }));
     const isUploaded = await upload();
