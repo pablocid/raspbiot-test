@@ -29,7 +29,7 @@ device.on('connect', function () {
         encoding: 'JPEG',
         quality: 75,
         awb: false,
-        awbgains: '1.5,1.2'
+        awbgains: '2,1.2'
     }
     raspberryPiCamera.start(options, () => {
         device.publish('LED', JSON.stringify({ message: 'The camera is ready' }));
