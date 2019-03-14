@@ -18,6 +18,9 @@ var device = awsIot.device({
     //debug: true
 });
 device.subscribe('LED');
+dev.on('connect', function () {
+    device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }))
+});
 
 const PiCamera = require('pi-camera');
 const myCamera = new PiCamera({
@@ -79,8 +82,16 @@ async function exec() {
 
 // exec();
 device.on('message', function (topic, payload) {
-    console.log('on message', topic, payload.toString());
-    exec();
+
+    try {
+        console.log('on message', topic, payload.toString());
+        const p = JSON.parse(payload.toString());
+        if (p.code === 100) {
+            exec();
+        }
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 
