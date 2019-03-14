@@ -1,0 +1,86 @@
+const awsIot = require('aws-iot-device-sdk');
+const AWS = require('aws-sdk');
+const fs = require('fs');
+const path = require('path');
+const credentials = require('./certs/credentials.json');
+
+//configuring the AWS environment
+AWS.config.update(credentials);
+var s3 = new AWS.S3();
+
+var device = awsIot.device({
+    keyPath: './certs/private.pem.key',
+    certPath: './certs/certificate.pem.crt',
+    caPath: './certs/AmazonRootCA1.pem',
+    clientId: 'cosa5',
+    region: 'us-east-1',
+    host: 'a349hitxtjootl-ats.iot.us-east-1.amazonaws.com',
+    //debug: true
+});
+
+const PiCamera = require('pi-camera');
+const myCamera = new PiCamera({
+    mode: 'photo',
+    output: `${__dirname}/test.jpg`,
+    width: 640,
+    height: 480,
+    nopreview: true,
+});
+
+function connecting(dev) {
+    return new Promise((res, rej) => {
+        dev.on('connect', function () {
+            res(true);
+            // console.log('connected');
+            // device.subscribe('LED');
+            device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }))
+        });
+    });
+}
+function upload() {
+    //configuring parameters
+    var filePath = "./test.jpg";
+    var params = {
+        Bucket: 'iot-image-raspicam',
+        Body: fs.createReadStream(filePath),
+        Key: "folder/" + Date.now() + "_" + path.basename(filePath)
+    };
+    return new Promise((res, rej) => {
+        s3
+            .upload(params)
+            .on('httpUploadProgress', event => {
+                //console.log(`Uploaded ${event.loaded} out of ${event.total}: ${parseInt(event.loaded/event.total*100)}%`);
+                device.publish('LED', JSON.stringify({ message: 'uplading', upload: parseInt(event.loaded / event.total * 100) }));
+            })
+            .send((err, data) => {
+                if (err) { res(false); } else { res(true); }
+                device.publish('LED', JSON.stringify({ message: err ? 'error' : 'sended', data: err ? err : data }));
+            });
+    });
+}
+
+async function exec() {
+    const isConnected = await connecting(device);
+    if (!isConnected) { return; }
+
+    myCamera.snap()
+        .then((result) => {
+            // Your picture was captured
+        })
+        .catch((error) => {
+            // Handle your error
+        });
+
+    const isUploaded = await upload();
+    if (isUploaded) { console.log('The file is uploaded'); }
+    else { console.log('The upload was fail'); }
+
+
+}
+
+// exec();
+// device.on('message', function (topic, payload) {
+//     //console.log('on message', topic, payload.toString());
+// })
+
+
