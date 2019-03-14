@@ -11,6 +11,9 @@ const streamCamera = new StreamCamera({
     codec: Codec.MJPEG
 });
 
+const raspberryPiCamera = require('raspberry-pi-camera-native');
+
+
 
 //configuring the AWS environment
 AWS.config.update(credentials);
@@ -28,9 +31,19 @@ var device = awsIot.device({
 device.subscribe('LED');
 device.on('connect', function () {
     device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }));
-    streamCamera.startCapture().then(x => {
+    // streamCamera.startCapture().then(x => {
+    //     device.publish('LED', JSON.stringify({ message: 'The camera is ready' }));
+    // })
+    const options = {
+        width: 1280,
+        height: 720,
+        fps: 10,
+        encoding: 'JPEG',
+        quality: 75
+    }
+    raspberryPiCamera.start(options, () => {
         device.publish('LED', JSON.stringify({ message: 'The camera is ready' }));
-    })
+    });
 });
 const output = `${__dirname}/test.jpg`;
 const myCamera = new PiCamera({
@@ -78,17 +91,18 @@ async function exec() {
 
     try {
         // await myCamera.snap();
-        const image = await streamCamera.takeImage();//await stillCamera.takeImage();
+        console.log('in the try');
+        const image = await takePic();//await streamCamera.takeImage();//await stillCamera.takeImage();
         device.publish('LED', JSON.stringify({ message: 'taked...' }));
         fs.writeFileSync(output, image);
         device.publish('LED', JSON.stringify({ message: 'saved...' }));
         // device.publish('LED', JSON.stringify({ message: 'picture ready' }));
-    } catch (e) { 
+    } catch (e) {
         console.log(e);
         device.publish('LED', JSON.stringify({ message: 'picture fail', e }));
-        return; 
+        return;
     }
-    
+
     device.publish('LED', JSON.stringify({ message: 'uploading...' }));
     const isUploaded = await upload();
     if (isUploaded) { console.log('The file is uploaded'); }
@@ -96,6 +110,15 @@ async function exec() {
 
 }
 
+function takePic() {
+    return new Promise((res, rej) => {
+        // add frame data event listener
+        let pi = raspberryPiCamera.on('frame', (frameData) => {
+            res(frameData);
+            delete pi;
+        });
+    });
+}
 
 device.on('message', function (topic, payload) {
 
