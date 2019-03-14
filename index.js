@@ -62,8 +62,8 @@ function upload() {
 
 async function exec() {
     console.log('executing...');
-    const isConnected = await connecting(device);
-    if (!isConnected) { return; }
+    // const isConnected = await connecting(device);
+    // if (!isConnected) { return; }
 
     try {
         await myCamera.snap();
