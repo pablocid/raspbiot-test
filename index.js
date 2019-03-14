@@ -73,9 +73,8 @@ function upload() {
 }
 
 async function exec() {
-    console.log('executing...');
-    // const isConnected = await connecting(device);
-    // if (!isConnected) { return; }
+    // console.log('executing...');
+    device.publish('LED', JSON.stringify({ message: 'executing...' }));
 
     try {
         // await myCamera.snap();
@@ -83,14 +82,15 @@ async function exec() {
         fs.writeFileSync(output, image);
         device.publish('LED', JSON.stringify({ message: 'picture ready' }));
     } catch (e) { device.publish('LED', JSON.stringify({ message: 'picture fail', e })); return; }
-
+    
+    device.publish('LED', JSON.stringify({ message: 'uploading...' }));
     const isUploaded = await upload();
     if (isUploaded) { console.log('The file is uploaded'); }
     else { console.log('The upload was fail'); }
 
 }
 
-// exec();
+
 device.on('message', function (topic, payload) {
 
     try {
