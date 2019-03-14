@@ -78,7 +78,7 @@ async function exec() {
 
     try {
         // await myCamera.snap();
-        const image = await streamCamera.takeImage();//await stillCamera.takeImage();
+        const image = await stillCamera.takeImage(); //await streamCamera.takeImage();//
         device.publish('LED', JSON.stringify({ message: 'taked...' }));
         fs.writeFileSync(output, image);
         device.publish('LED', JSON.stringify({ message: 'saved...' }));
