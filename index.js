@@ -18,7 +18,7 @@ var device = awsIot.device({
     //debug: true
 });
 device.subscribe('LED');
-dev.on('connect', function () {
+device.on('connect', function () {
     device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }))
 });
 
