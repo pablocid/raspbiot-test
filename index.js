@@ -25,7 +25,7 @@ device.on('connect', function () {
 
     const options = {
         width: 1980,
-        //height: 720,
+        height: 1440,
         fps: 5,
         encoding: 'JPEG',
         quality: 100
