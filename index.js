@@ -3,6 +3,14 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
 const credentials = require('./certs/credentials.json');
+const PiCamera = require('pi-camera');
+const { StillCamera, StreamCamera, Codec } = require('pi-camera-connect');
+const stillCamera = new StillCamera();
+
+const streamCamera = new StreamCamera({
+    codec: Codec.MJPEG
+});
+
 
 //configuring the AWS environment
 AWS.config.update(credentials);
@@ -19,10 +27,12 @@ var device = awsIot.device({
 });
 device.subscribe('LED');
 device.on('connect', function () {
-    device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }))
+    device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }));
+    streamCamera.startCapture().then(x => {
+        device.publish('LED', JSON.stringify({ message: 'The camera is ready' }));
+    })
 });
-const output =`${__dirname}/test.jpg`;
-const PiCamera = require('pi-camera');
+const output = `${__dirname}/test.jpg`;
 const myCamera = new PiCamera({
     mode: 'photo',
     output,
@@ -68,14 +78,15 @@ async function exec() {
     // if (!isConnected) { return; }
 
     try {
-        await myCamera.snap();
+        // await myCamera.snap();
+        const image = await streamCamera.takeImage();//await stillCamera.takeImage();
+        fs.writeFileSync(output, image);
         device.publish('LED', JSON.stringify({ message: 'picture ready' }));
     } catch (e) { device.publish('LED', JSON.stringify({ message: 'picture fail', e })); return; }
 
     const isUploaded = await upload();
     if (isUploaded) { console.log('The file is uploaded'); }
     else { console.log('The upload was fail'); }
-
 
 }
 

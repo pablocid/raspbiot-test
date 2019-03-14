@@ -12,6 +12,7 @@
   "dependencies": {
     "aws-iot-device-sdk": "^2.2.1",
     "aws-sdk": "^2.422.0",
-    "pi-camera": "^1.2.1"
+    "pi-camera": "^1.2.1",
+    "pi-camera-connect": "^0.2.0"
   }
 }
