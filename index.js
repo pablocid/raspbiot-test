@@ -24,13 +24,11 @@ device.on('connect', function () {
     device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }));
 
     const options = {
-        //width: 1280, //1980
-        //height: 800, // 1440
         mode: 4,
         fps: 5,
         encoding: 'JPEG',
         quality: 75,
-        awb: 'off',
+        awb: false,
         awbgains: '1.5,1.2'
     }
     raspberryPiCamera.start(options, () => {
