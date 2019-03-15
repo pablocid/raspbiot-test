@@ -56,7 +56,7 @@ function upload(img) {
             .upload(params)
             .on('httpUploadProgress', event => {
                 //console.log(`Uploaded ${event.loaded} out of ${event.total}: ${parseInt(event.loaded/event.total*100)}%`);
-                device.publish('LED', JSON.stringify({ message: 'uplading', upload: parseInt(event.loaded / event.total * 100) }));
+                device.publish('LED', JSON.stringify({ message: `uplading ${parseInt(event.loaded / event.total * 100)}%` }));
             })
             .send((err, data) => {
                 if (err) { res(false); } else { res(true); }
