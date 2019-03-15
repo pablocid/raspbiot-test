@@ -31,7 +31,7 @@ device.on('connect', function () {
     const options = {
         width: 1296,
         height: 972,
-        fps: 1,
+        fps: 3,
         encoding: 'JPEG',
         quality: 100,
         awb: false,
@@ -46,7 +46,7 @@ const output = `${__dirname}/test.jpg`;
 function upload(img) {
     //configuring parameters
     var params = {
-        Bucket: 'iot-image-raspicam',
+        Bucket: 'ngt2storage-dev',
         Body: img,//fs.createReadStream(output),
         Key: "folder/" + Date.now() + "_" + path.basename(output)
     };
