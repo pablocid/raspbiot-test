@@ -29,10 +29,9 @@ device.on('connect', function () {
     device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }));
 
     const options = {
-        //mode: 2,
         width: 1296,
         height: 972,
-        fps: 5,
+        fps: 1,
         encoding: 'JPEG',
         quality: 100,
         awb: false,
