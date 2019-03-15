@@ -16,9 +16,14 @@ var device = awsIot.device({
     caPath: './certs/AmazonRootCA1.pem',
     clientId: 'cosa5',
     region: 'us-east-1',
+    accessKeyId: credentials.accessKeyId,
+    secretKey: credentials.secretAccessKey,
+    port: 443,
     host: 'a349hitxtjootl-ats.iot.us-east-1.amazonaws.com',
-    //debug: true
+    protocol: 'wss',
+    debug: false
 });
+
 device.subscribe('LED');
 device.on('connect', function () {
     device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }));
