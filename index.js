@@ -30,10 +30,10 @@ device.on('connect', function () {
 
     const options = {
         //mode: 2,
-        width: 3280,
-        height: 2464,
+        width: 1296,
+        height: 972,
         fps: 5,
-        encoding: 'PNG',
+        encoding: 'raspberry-pi-camera-native',
         quality: 100,
         awb: false,
         awbg: '3,0.1'
