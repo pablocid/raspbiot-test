@@ -33,7 +33,7 @@ device.on('connect', function () {
         width: 1296,
         height: 972,
         fps: 5,
-        encoding: 'raspberry-pi-camera-native',
+        encoding: 'JPEG',
         quality: 100,
         awb: false,
         awbg: '3,0.1'
