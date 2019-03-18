@@ -26,7 +26,7 @@ var device = awsIot.device({
 
 device.subscribe('LED');
 device.on('connect', function () {
-    device.publish('LED', JSON.stringify({ message: 'Raspberry are connected' }));
+    device.publish('LED', JSON.stringify({ message: 'Raspberry is connected' }));
 
     const options = {
         width: 1296,
@@ -48,7 +48,7 @@ function upload(img) {
     var params = {
         Bucket: 'ngt2storage-dev',
         Body: img,//fs.createReadStream(output),
-        Key: "folder/" + Date.now() + "_" + path.basename(output)
+        Key: "public/" + Date.now() + "_" + path.basename(output)
     };
     return new Promise((res, rej) => {
         s3
