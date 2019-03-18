@@ -48,7 +48,7 @@ function upload(img) {
     var params = {
         Bucket: 'ngt2storage-dev',
         Body: img,//fs.createReadStream(output),
-        Key: "public/" + Date.now() + "_" + path.basename(output)
+        Key: "protected/" + Date.now() + "_" + path.basename(output)
     };
     return new Promise((res, rej) => {
         s3
