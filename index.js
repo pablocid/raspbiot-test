@@ -44,12 +44,12 @@ device.on('connect', function () {
 const output = `${__dirname}/test.jpg`;
 
 function upload(img) {
-    const key = Date.now() + "_" + path.basename(output);
+    const key = "pics/" + Date.now() + "_" + path.basename(output);
     //configuring parameters
     var params = {
         Bucket: 'ngt2storage-dev',
         Body: img,//fs.createReadStream(output),
-        Key: "public/pics" + key
+        Key: "public/" + key
     };
     return new Promise((res, rej) => {
         s3
