@@ -59,7 +59,7 @@ function upload(img) {
             })
             .send((err, data) => {
                 if (err) { res(false); } else { res(true); }
-                device.publish('LED', JSON.stringify({ message: err ? 'error' : 'sended', data: err ? err : data }));
+                device.publish('LED', JSON.stringify({ message: err ? 'error' : 'sended', url: err ? err : path.basename(output) }));
             });
     });
 }
@@ -79,7 +79,7 @@ async function exec() {
         return;
     }
 
-    device.publish('LED', JSON.stringify({ message: 'uploading...' }));
+    device.publish('LED', JSON.stringify({ message: 'upload 0%' }));
     const isUploaded = await upload(image);
     if (isUploaded) { console.log('The file is uploaded'); }
     else { console.log('The upload was fail'); }
