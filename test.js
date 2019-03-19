@@ -6,11 +6,11 @@ const credentials = require('./certs/credentials.json');
 
 const raspberryPiCamera = require('raspberry-pi-camera-native');
 
-
+const output = `${__dirname}/test.jpg`;
 const PiCamera = require('pi-camera');
 const myCamera = new PiCamera({
     mode: 'photo',
-    output: `${__dirname}/test.jpg`,
+    output,
     width: 640,
     height: 480,
     nopreview: true,
@@ -52,7 +52,6 @@ device.on('connect', function () {
     //     device.publish('LED', JSON.stringify({ message: 'The camera is ready' }));
     // });
 });
-const output = `${__dirname}/test.jpg`;
 
 
 function upload(img) {
@@ -60,7 +59,7 @@ function upload(img) {
     //configuring parameters
     var params = {
         Bucket: 'ngt2storage-dev',
-        Body: img,//fs.createReadStream(output),
+        Body: fs.createReadStream(output),
         Key: "public/" + key
     };
     return new Promise((res, rej) => {
