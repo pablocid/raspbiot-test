@@ -105,6 +105,9 @@ device.on('message', function (topic, payload) {
         if (p.code === 100) {
             exec();
         }
+        if (p.code === 200) {
+            device.publish('LED', JSON.stringify({ message: 'Camera ready', code: 200 }));
+        }
     } catch (error) {
         console.log(error);
     }
