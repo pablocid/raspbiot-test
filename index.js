@@ -33,7 +33,7 @@ device.on('connect', function () {
         height: 1944,
         fps: 3,
         encoding: 'JPEG',
-        quality: 100,
+        quality: 75,
         awb: false,
         awbg: '3,0.1'
     }
